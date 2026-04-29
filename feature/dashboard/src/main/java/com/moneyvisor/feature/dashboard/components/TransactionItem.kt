@@ -116,7 +116,7 @@ fun TransactionItem(
                 ),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.ExtraBold,
-                color = if (isIncome) incomeColor.copy(alpha = contentAlpha) else MaterialTheme.colorScheme.onBackground.copy(alpha = contentAlpha)
+                color = if (isIncome) incomeColor.copy(alpha = contentAlpha) else expenseColor.copy(alpha = contentAlpha)
             )
         }
     }
