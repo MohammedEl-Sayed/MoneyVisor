@@ -1,0 +1,12 @@
+<resources>
+    <style name="Theme.MoneyVisor" parent="android:Theme.DeviceDefault.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="Theme.MoneyVisor.Splash" parent="android:Theme.DeviceDefault.NoActionBar">
+        <item name="android:windowBackground">@drawable/ic_launcher_background</item>
+        <item name="android:statusBarColor">#4A64F6</item>
+        <item name="android:navigationBarColor">#4A64F6</item>
+    </style>
+</resources>

@@ -1,0 +1,28 @@
+# Android
+build/
+.gradle/
+app/build/
+data/build/
+domain/build/
+core/database/build/
+core/designsystem/build/
+feature/dashboard/build/
+feature/transaction/build/
+local.properties
+.navigation/
+
+# Android Studio
+.idea/
+*.iml
+.DS_Store
+captures/
+.externalNativeBuild/
+
+# Secrets
+*.jks
+!moneyvisor-release.jks # Included here because user specifically asked to push full app, though usually excluded
+# .env # If any
+
+# Misc
+*.apk
+*.log

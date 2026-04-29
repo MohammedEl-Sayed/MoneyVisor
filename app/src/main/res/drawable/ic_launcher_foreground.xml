@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="1024"
+    android:viewportHeight="1024">
+    <!-- Centered Logo Content -->
+    <group
+        android:translateX="128"
+        android:translateY="128"
+        android:scaleX="0.75"
+        android:scaleY="0.75">
+        <!-- Acorn Shell (Top) -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M814,352.5C765.2,279.7 657.4,228 512,228C366.6,228 258.8,279.7 210,352.5C198.8,369.3 203.3,391.7 220,402.9C236.8,414.1 259.2,409.6 270.4,392.9C304.5,335.7 388,296 512,296C636,296 719.5,335.7 753.6,392.9C764.8,409.6 787.2,414.1 804,402.9C820.7,391.7 825.2,369.3 814,352.5Z" />
+        <!-- Shield/Acorn Body -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M512,864C412,864 256,792 256,480L256,432C256,413.2 271.2,398 290,398L734,398C752.8,398 768,413.2 768,432L768,480C768,792 612,864 512,864ZM324,466L324,480C324,732 448,796 512,796C576,796 700,732 700,480L700,466L324,466Z" />
+        <!-- Dollar Symbol -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M512,500C488,500 468,510 468,534C468,558 488,568 512,568C536,568 556,578 556,602C556,626 536,636 512,636L512,656L484,656L484,636C464,636 448,624 448,604L476,604C476,612 488,616 504,616C520,616 528,612 528,604C528,596 520,592 496,584C472,576 452,566 452,542C452,518 472,508 496,508L496,488L524,488L524,508C544,508 556,520 556,536L528,536C528,528 520,524 508,524C496,524 488,528 488,536C488,544 496,548 520,556C544,564 564,574 564,598C564,622 544,632 520,632L520,632Z" />
+        <!-- Arrow Up -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M610,610L610,540L580,540L625,500L670,540L640,540L640,610Z" />
+        <!-- Leaves (Bottom) -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M440,760C440,760 380,750 360,700C380,720 420,730 440,730L440,760Z" />
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M584,760C584,760 644,750 664,700C644,720 604,730 584,730L584,760Z" />
+    </group>
+</vector>
