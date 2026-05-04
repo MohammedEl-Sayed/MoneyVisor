@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <full-backup-content>
-    <include domain="file" path="."/>
+    <!-- 🛡️ Sentinel: Protect sensitive local data like biometric status -->
+    <exclude domain="sharedpref" path="user_prefs.xml"/>
+    <!-- 🛡️ Sentinel: Do not backup internal database -->
+    <exclude domain="database" path="moneyvisor.db"/>
 </full-backup-content>
