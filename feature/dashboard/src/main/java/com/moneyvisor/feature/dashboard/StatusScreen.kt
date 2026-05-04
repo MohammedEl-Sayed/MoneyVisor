@@ -38,7 +38,6 @@ import com.moneyvisor.feature.dashboard.components.CategoryPieChart
 import com.moneyvisor.feature.dashboard.util.CurrencyUtils
 import com.moneyvisor.domain.model.Budget
 import com.moneyvisor.domain.model.Goal
-import java.text.NumberFormat
 import java.util.*
 
 @Composable
