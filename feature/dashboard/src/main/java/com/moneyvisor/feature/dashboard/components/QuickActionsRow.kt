@@ -23,7 +23,8 @@ import com.moneyvisor.core.designsystem.theme.BrandBlue
 
 @Composable
 fun QuickActionsRow(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onActionClick: (String) -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -46,22 +47,26 @@ fun QuickActionsRow(
             QuickActionButton(
                 icon = MoneyVisorIcons.Topup,
                 label = "Topup",
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                onClick = { onActionClick("Topup") }
             )
             QuickActionButton(
                 icon = MoneyVisorIcons.Bills,
                 label = "Bills",
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                onClick = { onActionClick("Bills") }
             )
             QuickActionButton(
                 icon = MoneyVisorIcons.Savings,
                 label = "Savings",
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                onClick = { onActionClick("Savings") }
             )
             QuickActionButton(
                 icon = MoneyVisorIcons.Cards,
                 label = "Cards",
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                onClick = { onActionClick("Cards") }
             )
         }
     }
@@ -71,7 +76,8 @@ fun QuickActionsRow(
 private fun QuickActionButton(
     icon: ImageVector,
     label: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -80,7 +86,7 @@ private fun QuickActionButton(
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
-                onClick = { /* TODO */ }
+                onClick = onClick
             )
             .padding(vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
