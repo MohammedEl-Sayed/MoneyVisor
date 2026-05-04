@@ -48,6 +48,9 @@ fun DashboardChart(
     val expenseColor = if (isDark) CrimsonRubyDark else CrimsonRuby
     val totalColor = TotalBlue
 
+    // Use remember for SimpleDateFormat to avoid recreating it on every recomposition
+    val dateFormat = remember { SimpleDateFormat("EEE", Locale.getDefault()) }
+
     Surface(
         modifier = modifier
             .fillMaxWidth()
@@ -104,7 +107,6 @@ fun DashboardChart(
             Spacer(modifier = Modifier.height(16.dp))
             
             val days = remember(incomePoints.size) {
-                val dateFormat = SimpleDateFormat("EEE", Locale.getDefault())
                 (0 until incomePoints.size).map { i ->
                     val d = Calendar.getInstance()
                     d.add(Calendar.DAY_OF_YEAR, - (incomePoints.size - 1 - i))

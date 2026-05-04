@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,7 +38,11 @@ fun TransactionItem(
     val expenseColor = if (isDark) CrimsonRubyDark else CrimsonRuby
     
     val isIncome = transaction.type == TransactionType.INCOME
-    val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+
+    // Remember SimpleDateFormat instance to prevent expensive initialization on every recomposition
+    // Note: SimpleDateFormat is not thread-safe, but remember provides it per-composable instance in the composition tree
+    val dateFormat = remember { SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()) }
+
     val contentAlpha = if (transaction.isDraft) 0.5f else 1.0f
 
     Surface(
