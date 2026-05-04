@@ -65,4 +65,31 @@ class TransactionRepositoryImplTest {
         assertEquals("Test", result?.category)
         assertEquals(TransactionType.INCOME, result?.type)
     }
+
+    @Test
+    fun `getTransactionsByDateRange returns mapped domain models`() = runTest {
+        val start = 100L
+        val end = 500L
+        val entities = listOf(
+            TransactionEntity(id = "1", amount = 100.0, type = "INCOME", category = "Salary", date = 123L, tag = "Salary"),
+            TransactionEntity(id = "2", amount = 50.0, type = "EXPENSE", category = "Food", date = 456L, tag = "Food")
+        )
+        every { dao.getTransactionsByDateRange(start, end) } returns flowOf(entities)
+
+        repository.getTransactionsByDateRange(start, end).collect { transactions ->
+            assertEquals(2, transactions.size)
+            assertEquals("Salary", transactions[0].category)
+            assertEquals(TransactionType.INCOME, transactions[0].type)
+            assertEquals("Food", transactions[1].category)
+            assertEquals(TransactionType.EXPENSE, transactions[1].type)
+        }
+    }
+
+    @Test
+    fun `getTransactionsByDateRange returns empty list when no entities match`() = runTest {
+        every { dao.getTransactionsByDateRange(any(), any()) } returns flowOf(emptyList())
+        repository.getTransactionsByDateRange(100L, 500L).collect { transactions ->
+            assertEquals(0, transactions.size)
+        }
+    }
 }
