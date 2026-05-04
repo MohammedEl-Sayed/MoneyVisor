@@ -36,12 +36,14 @@ fun CategoryPieChart(
 ) {
     // Pre-calculate final start angles
     val finalStartAngles = remember(data) {
+        val size = minOf(data.size, 6)
+        val angles = FloatArray(size)
         var current = -90f
-        data.take(6).map { item ->
-            val start = current
-            current += item.percentage * 360f
-            start
+        for (i in 0 until size) {
+            angles[i] = current
+            current += data[i].percentage * 360f
         }
+        angles
     }
 
     Column(
@@ -61,7 +63,7 @@ fun CategoryPieChart(
                         if (sweepAngle > 0.5f) {
                             drawArc(
                                 color = CategoryColors.getOrElse(index) { Color.Gray },
-                                startAngle = finalStartAngles.getOrElse(index) { -90f },
+                                startAngle = if (index < finalStartAngles.size) finalStartAngles[index] else -90f,
                                 sweepAngle = sweepAngle,
                                 useCenter = false,
                                 style = Stroke(width = strokeWidth, cap = StrokeCap.Round)

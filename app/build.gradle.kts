@@ -22,17 +22,23 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("../moneyvisor-release.jks")
-            storePassword = "moneyvisor123"
-            keyAlias = "moneyvisor"
-            keyPassword = "moneyvisor123"
+            val keystoreFile = file("../moneyvisor-release.jks")
+            if (keystoreFile.exists()) {
+                storeFile = keystoreFile
+                storePassword = "moneyvisor123"
+                keyAlias = "moneyvisor"
+                keyPassword = "moneyvisor123"
+            }
         }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("release")
+            val keystoreFile = file("../moneyvisor-release.jks")
+            if (keystoreFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
