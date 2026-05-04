@@ -65,4 +65,13 @@ class TransactionRepositoryImplTest {
         assertEquals("Test", result?.category)
         assertEquals(TransactionType.INCOME, result?.type)
     }
+
+    @Test
+    fun `deleteAllTransactions calls dao deleteAllTransactions`() = runTest {
+        coEvery { dao.deleteAllTransactions() } returns Unit
+
+        repository.deleteAllTransactions()
+
+        coVerify { dao.deleteAllTransactions() }
+    }
 }
