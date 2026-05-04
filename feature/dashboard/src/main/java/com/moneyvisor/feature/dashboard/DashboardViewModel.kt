@@ -266,9 +266,10 @@ class DashboardViewModel @Inject constructor(
                 val cleanedJson = regex.find(json)?.value ?: json.trim()
                 if (!cleanedJson.startsWith("[") || !cleanedJson.endsWith("]")) { onComplete(false); return@launch }
                 val jsonArray = JSONArray(cleanedJson)
+                val transactionsToInsert = mutableListOf<Transaction>()
                 for (i in 0 until jsonArray.length()) {
                     val obj = jsonArray.getJSONObject(i)
-                    repository.insertTransaction(Transaction(
+                    transactionsToInsert.add(Transaction(
                         id = obj.optString("id", UUID.randomUUID().toString()),
                         amount = obj.optDouble("amount", 0.0),
                         category = obj.optString("category", "General"),
@@ -277,6 +278,7 @@ class DashboardViewModel @Inject constructor(
                         tag = obj.optString("tag", ""), isDraft = obj.optBoolean("isDraft", false)
                     ))
                 }
+                repository.insertTransactions(transactionsToInsert)
                 onComplete(true)
             } catch (e: Exception) { onComplete(false) }
         }
