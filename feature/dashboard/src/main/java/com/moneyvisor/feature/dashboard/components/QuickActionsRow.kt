@@ -23,7 +23,8 @@ import com.moneyvisor.core.designsystem.theme.BrandBlue
 
 @Composable
 fun QuickActionsRow(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onActionClick: (String) -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -46,21 +47,25 @@ fun QuickActionsRow(
             QuickActionButton(
                 icon = MoneyVisorIcons.Topup,
                 label = "Topup",
+                onClick = { onActionClick("Topup") },
                 modifier = Modifier.weight(1f)
             )
             QuickActionButton(
                 icon = MoneyVisorIcons.Bills,
                 label = "Bills",
+                onClick = { onActionClick("Bills") },
                 modifier = Modifier.weight(1f)
             )
             QuickActionButton(
                 icon = MoneyVisorIcons.Savings,
                 label = "Savings",
+                onClick = { onActionClick("Savings") },
                 modifier = Modifier.weight(1f)
             )
             QuickActionButton(
                 icon = MoneyVisorIcons.Cards,
                 label = "Cards",
+                onClick = { onActionClick("Cards") },
                 modifier = Modifier.weight(1f)
             )
         }
@@ -71,6 +76,7 @@ fun QuickActionsRow(
 private fun QuickActionButton(
     icon: ImageVector,
     label: String,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -80,7 +86,7 @@ private fun QuickActionButton(
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
-                onClick = { /* TODO */ }
+                onClick = onClick
             )
             .padding(vertical = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
