@@ -44,12 +44,20 @@ object CurrencyUtils {
         return if (isPrivacy) "****" else amount
     }
 
+    private val threadLocalFormatCache = object : ThreadLocal<MutableMap<String, NumberFormat>>() {
+        override fun initialValue() = mutableMapOf<String, NumberFormat>()
+    }
+
     fun formatAmount(amount: Double, currencyCode: String): String {
         return try {
-            val currency = Currency.getInstance(currencyCode)
-            val format = NumberFormat.getCurrencyInstance(Locale.getDefault())
-            format.currency = currency
-            format.format(amount)
+            val cache = threadLocalFormatCache.get()!!
+            var format = cache[currencyCode]
+            if (format == null) {
+                format = NumberFormat.getCurrencyInstance(Locale.getDefault())
+                format.currency = Currency.getInstance(currencyCode)
+                cache[currencyCode] = format
+            }
+            format!!.format(amount)
         } catch (e: Exception) {
             // Fallback to simple format
             "$currencyCode ${String.format("%.2f", amount)}"
