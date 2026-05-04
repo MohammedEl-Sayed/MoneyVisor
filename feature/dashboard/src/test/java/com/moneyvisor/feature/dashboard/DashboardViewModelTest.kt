@@ -23,12 +23,23 @@ import java.util.Calendar
 class DashboardViewModelTest {
 
     private val repository: TransactionRepository = mockk()
+    private val budgetRepository: com.moneyvisor.domain.repository.BudgetRepository = mockk()
+    private val goalRepository: com.moneyvisor.domain.repository.GoalRepository = mockk()
+    private val userPrefs: com.moneyvisor.data.repository.UserPreferencesRepository = mockk()
     private lateinit var viewModel: DashboardViewModel
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setup() {
         Dispatchers.setMain(testDispatcher)
+        io.mockk.every { budgetRepository.getBudgets() } returns kotlinx.coroutines.flow.flowOf(emptyList())
+        io.mockk.every { goalRepository.getGoals() } returns kotlinx.coroutines.flow.flowOf(emptyList())
+        io.mockk.every { userPrefs.chartInterval } returns kotlinx.coroutines.flow.flowOf("WEEKLY")
+        io.mockk.every { userPrefs.currencyCode } returns kotlinx.coroutines.flow.flowOf("USD")
+        io.mockk.every { userPrefs.themeMode } returns kotlinx.coroutines.flow.flowOf("SYSTEM")
+        io.mockk.every { userPrefs.isBiometricEnabled } returns kotlinx.coroutines.flow.flowOf(false)
+        io.mockk.every { userPrefs.isPrivacyModeEnabled } returns kotlinx.coroutines.flow.flowOf(false)
+        io.mockk.every { userPrefs.isFabEnabled } returns kotlinx.coroutines.flow.flowOf(true)
     }
 
     @After
@@ -45,14 +56,14 @@ class DashboardViewModelTest {
         )
         every { repository.getTransactions() } returns flowOf(transactions)
 
-        viewModel = DashboardViewModel(repository)
+        viewModel = DashboardViewModel(repository, budgetRepository, goalRepository, userPrefs)
 
         viewModel.uiState.test {
             val state = awaitItem()
-            assertEquals(1000.0, state.totalIncome, 0.001)
-            assertEquals(500.0, state.totalSpent, 0.001)
-            assertEquals(500.0, state.balance, 0.001)
-            assertEquals(3, state.transactions.size)
+            assertEquals(1000.0, state.dashboard.totalIncome, 0.001)
+            assertEquals(500.0, state.dashboard.totalSpent, 0.001)
+            assertEquals(500.0, state.dashboard.balance, 0.001)
+            assertEquals(3, state.dashboard.transactions.size)
         }
     }
 
@@ -70,13 +81,13 @@ class DashboardViewModelTest {
         )
         every { repository.getTransactions() } returns flowOf(transactions)
 
-        viewModel = DashboardViewModel(repository)
+        viewModel = DashboardViewModel(repository, budgetRepository, goalRepository, userPrefs)
 
         viewModel.uiState.test {
             val state = awaitItem()
             // Last item in chartData is today, second to last is yesterday
-            assertEquals(1f, state.chartData.last()) // Max is 100, so 100/100 = 1.0
-            assertEquals(0.5f, state.chartData[state.chartData.size - 2]) // 50/100 = 0.5
+            assertEquals(1f, state.dashboard.expenseChartData.last()) // Max is 100, so 100/100 = 1.0
+            assertEquals(0.5f, state.dashboard.expenseChartData[state.dashboard.expenseChartData.size - 2]) // 50/100 = 0.5
         }
     }
 }

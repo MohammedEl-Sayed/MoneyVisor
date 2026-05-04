@@ -1,0 +1,30 @@
+--- app/build.gradle.kts
++++ app/build.gradle.kts
+@@ -19,16 +19,19 @@
+     }
+
+     signingConfigs {
+-        create("release") {
+-            storeFile = file("../moneyvisor-release.jks")
+-            storePassword = "moneyvisor123"
+-            keyAlias = "moneyvisor"
+-            keyPassword = "moneyvisor123"
++        val releaseKeystore = file("../moneyvisor-release.jks")
++        if (releaseKeystore.exists()) {
++            create("release") {
++                storeFile = releaseKeystore
++                storePassword = "moneyvisor123"
++                keyAlias = "moneyvisor"
++                keyPassword = "moneyvisor123"
++            }
+         }
+     }
+
+     buildTypes {
+         release {
+             isMinifyEnabled = false
+-            signingConfig = signingConfigs.getByName("release")
++            signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
+             proguardFiles(
+                 getDefaultProguardFile("proguard-android-optimize.txt"),
+                 "proguard-rules.pro"
