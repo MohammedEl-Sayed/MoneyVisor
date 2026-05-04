@@ -23,7 +23,6 @@ import com.moneyvisor.core.designsystem.theme.CrimsonRubyDark
 import com.moneyvisor.core.designsystem.theme.AppAccent
 import com.moneyvisor.core.designsystem.theme.AppAccentDark
 import com.moneyvisor.feature.dashboard.util.CurrencyUtils
-import java.text.NumberFormat
 import java.util.Locale
 
 @Composable

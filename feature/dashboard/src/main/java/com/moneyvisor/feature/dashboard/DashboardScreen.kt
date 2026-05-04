@@ -34,7 +34,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import com.moneyvisor.domain.model.Transaction
-import java.text.NumberFormat
 import java.util.*
 
 @OptIn(ExperimentalFoundationApi::class)
