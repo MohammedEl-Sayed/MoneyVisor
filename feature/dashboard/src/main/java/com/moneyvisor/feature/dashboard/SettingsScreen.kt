@@ -84,106 +84,29 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Theme Selection Card
-            SettingsCard(isDark = isDark) {
-                Column {
-                    Text(
-                        text = "App Theme",
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            ThemeOption("LIGHT", settings.themeMode == "LIGHT", { viewModel.updateThemeMode("LIGHT") }, Modifier.weight(1f))
-                            ThemeOption("DARK", settings.themeMode == "DARK", { viewModel.updateThemeMode("DARK") }, Modifier.weight(1f))
-                        }
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            ThemeOption("AMOLED", settings.themeMode == "AMOLED", { viewModel.updateThemeMode("AMOLED") }, Modifier.weight(1f))
-                            ThemeOption("SYSTEM", settings.themeMode == "SYSTEM", { viewModel.updateThemeMode("SYSTEM") }, Modifier.weight(1f))
-                        }
-                    }
-                }
-            }
+            ThemeSelectionCard(
+                isDark = isDark,
+                currentTheme = settings.themeMode,
+                onThemeSelected = { viewModel.updateThemeMode(it) }
+            )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             // Currency Selection Card
-            SettingsCard(
+            CurrencySelectionCard(
                 isDark = isDark,
+                currencyCode = settings.currencyCode,
                 onClick = { showCurrencyDialog = true }
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            text = "Currency",
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            text = "Selected: ${settings.currencyCode}",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                        )
-                    }
-                    Text(
-                        text = "Change",
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
+            )
 
             Spacer(modifier = Modifier.height(12.dp))
             
             // Data Reset Interval Card
-            SettingsCard(isDark = isDark) {
-                Column {
-                    Text(
-                        text = "Chart Data Reset",
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Text(
-                        text = "Choose how often dashboard charts reset.",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                    )
-                    
-                    Spacer(modifier = Modifier.height(20.dp))
-                    
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        IntervalOption(
-                            label = "Weekly",
-                            isSelected = settings.chartInterval == "WEEKLY",
-                            onClick = { viewModel.updateChartInterval("WEEKLY") },
-                            modifier = Modifier.weight(1f)
-                        )
-                        IntervalOption(
-                            label = "Monthly",
-                            isSelected = settings.chartInterval == "MONTHLY",
-                            onClick = { viewModel.updateChartInterval("MONTHLY") },
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-                }
-            }
+            ChartIntervalCard(
+                isDark = isDark,
+                currentInterval = settings.chartInterval,
+                onIntervalSelected = { viewModel.updateChartInterval(it) }
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -197,31 +120,11 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // FAB Toggle Card
-            SettingsCard(isDark = isDark) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = "Quick Add Button",
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            text = "Show floating button to add money.",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                        )
-                    }
-                    CustomSwitch(
-                        checked = settings.isFabEnabled,
-                        onCheckedChange = { viewModel.toggleFabEnabled(it) }
-                    )
-                }
-            }
+            FabToggleCard(
+                isDark = isDark,
+                isEnabled = settings.isFabEnabled,
+                onToggle = { viewModel.toggleFabEnabled(it) }
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -235,60 +138,20 @@ fun SettingsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Biometric Lock Card
-            SettingsCard(isDark = isDark) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = "Biometric Lock",
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            text = "Require fingerprint/face to open app.",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                        )
-                    }
-                    CustomSwitch(
-                        checked = settings.isBiometricEnabled,
-                        onCheckedChange = { viewModel.toggleBiometric(it) }
-                    )
-                }
-            }
+            BiometricLockCard(
+                isDark = isDark,
+                isEnabled = settings.isBiometricEnabled,
+                onToggle = { viewModel.toggleBiometric(it) }
+            )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             // Privacy Mode Card
-            SettingsCard(isDark = isDark) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = "Privacy Mode",
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            text = "Hide balances and transaction amounts.",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                        )
-                    }
-                    CustomSwitch(
-                        checked = settings.isPrivacyModeEnabled,
-                        onCheckedChange = { viewModel.togglePrivacyMode(it) }
-                    )
-                }
-            }
+            PrivacyModeCard(
+                isDark = isDark,
+                isEnabled = settings.isPrivacyModeEnabled,
+                onToggle = { viewModel.togglePrivacyMode(it) }
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -301,56 +164,19 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Import/Export Options
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                DataActionCard(
-                    title = "Export Data",
-                    subtitle = "Save to JSON",
-                    onClick = { 
-                        viewModel.exportDataToJson { json ->
-                            coroutineScope.launch {
-                                snackbarHostState.showSnackbar("Export prepared.")
-                            }
-                        }
-                    },
-                    modifier = Modifier.weight(1f),
-                    isDark = isDark
-                )
-                DataActionCard(
-                    title = "Import Data",
-                    subtitle = "Load JSON",
-                    onClick = { /* Launch file picker */ },
-                    modifier = Modifier.weight(1f),
-                    isDark = isDark
-                )
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Reset Data Button Card
-            SettingsCard(
+            // Data Management Section
+            DataManagementSection(
                 isDark = isDark,
-                containerColor = if (isDark) CrimsonRuby.copy(alpha = 0.15f) else Color(0xFFFFF5F5),
-                borderColor = if (isDark) CrimsonRuby.copy(alpha = 0.3f) else CrimsonRuby.copy(alpha = 0.1f),
-                onClick = { showResetDialog = true }
-            ) {
-                Column {
-                    Text(
-                        text = "Reset All Data",
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Bold,
-                        color = CrimsonRuby
-                    )
-                    Text(
-                        text = "Permanently delete all data.",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = if (isDark) CrimsonRuby.copy(alpha = 0.7f) else Color(0xFFD32F2F).copy(alpha = 0.6f)
-                    )
-                }
-            }
+                onExportClick = {
+                    viewModel.exportDataToJson { json ->
+                        coroutineScope.launch {
+                            snackbarHostState.showSnackbar("Export prepared.")
+                        }
+                    }
+                },
+                onImportClick = { /* Launch file picker */ },
+                onResetClick = { showResetDialog = true }
+            )
             
             Spacer(modifier = Modifier.height(64.dp))
         }
@@ -407,6 +233,274 @@ private fun SettingsCard(
     ) {
         Box(modifier = Modifier.padding(20.dp)) {
             content()
+        }
+    }
+}
+
+@Composable
+private fun ThemeSelectionCard(
+    isDark: Boolean,
+    currentTheme: String,
+    onThemeSelected: (String) -> Unit
+) {
+    SettingsCard(isDark = isDark) {
+        Column {
+            Text(
+                text = "App Theme",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    ThemeOption("LIGHT", currentTheme == "LIGHT", { onThemeSelected("LIGHT") }, Modifier.weight(1f))
+                    ThemeOption("DARK", currentTheme == "DARK", { onThemeSelected("DARK") }, Modifier.weight(1f))
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    ThemeOption("AMOLED", currentTheme == "AMOLED", { onThemeSelected("AMOLED") }, Modifier.weight(1f))
+                    ThemeOption("SYSTEM", currentTheme == "SYSTEM", { onThemeSelected("SYSTEM") }, Modifier.weight(1f))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun CurrencySelectionCard(
+    isDark: Boolean,
+    currencyCode: String,
+    onClick: () -> Unit
+) {
+    SettingsCard(
+        isDark = isDark,
+        onClick = onClick
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(
+                    text = "Currency",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "Selected: ${currencyCode}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                )
+            }
+            Text(
+                text = "Change",
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+    }
+}
+
+@Composable
+private fun ChartIntervalCard(
+    isDark: Boolean,
+    currentInterval: String,
+    onIntervalSelected: (String) -> Unit
+) {
+    SettingsCard(isDark = isDark) {
+        Column {
+            Text(
+                text = "Chart Data Reset",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = "Choose how often dashboard charts reset.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                IntervalOption(
+                    label = "Weekly",
+                    isSelected = currentInterval == "WEEKLY",
+                    onClick = { onIntervalSelected("WEEKLY") },
+                    modifier = Modifier.weight(1f)
+                )
+                IntervalOption(
+                    label = "Monthly",
+                    isSelected = currentInterval == "MONTHLY",
+                    onClick = { onIntervalSelected("MONTHLY") },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun FabToggleCard(
+    isDark: Boolean,
+    isEnabled: Boolean,
+    onToggle: (Boolean) -> Unit
+) {
+    SettingsCard(isDark = isDark) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Quick Add Button",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "Show floating button to add money.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                )
+            }
+            CustomSwitch(
+                checked = isEnabled,
+                onCheckedChange = onToggle
+            )
+        }
+    }
+}
+
+@Composable
+private fun BiometricLockCard(
+    isDark: Boolean,
+    isEnabled: Boolean,
+    onToggle: (Boolean) -> Unit
+) {
+    SettingsCard(isDark = isDark) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Biometric Lock",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "Require fingerprint/face to open app.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                )
+            }
+            CustomSwitch(
+                checked = isEnabled,
+                onCheckedChange = onToggle
+            )
+        }
+    }
+}
+
+@Composable
+private fun PrivacyModeCard(
+    isDark: Boolean,
+    isEnabled: Boolean,
+    onToggle: (Boolean) -> Unit
+) {
+    SettingsCard(isDark = isDark) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Privacy Mode",
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "Hide balances and transaction amounts.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                )
+            }
+            CustomSwitch(
+                checked = isEnabled,
+                onCheckedChange = onToggle
+            )
+        }
+    }
+}
+
+@Composable
+private fun DataManagementSection(
+    isDark: Boolean,
+    onExportClick: () -> Unit,
+    onImportClick: () -> Unit,
+    onResetClick: () -> Unit
+) {
+    // Import/Export Options
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        DataActionCard(
+            title = "Export Data",
+            subtitle = "Save to JSON",
+            onClick = onExportClick,
+            modifier = Modifier.weight(1f),
+            isDark = isDark
+        )
+        DataActionCard(
+            title = "Import Data",
+            subtitle = "Load JSON",
+            onClick = onImportClick,
+            modifier = Modifier.weight(1f),
+            isDark = isDark
+        )
+    }
+
+    Spacer(modifier = Modifier.height(12.dp))
+
+    // Reset Data Button Card
+    SettingsCard(
+        isDark = isDark,
+        containerColor = if (isDark) CrimsonRuby.copy(alpha = 0.15f) else Color(0xFFFFF5F5),
+        borderColor = if (isDark) CrimsonRuby.copy(alpha = 0.3f) else CrimsonRuby.copy(alpha = 0.1f),
+        onClick = onResetClick
+    ) {
+        Column {
+            Text(
+                text = "Reset All Data",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
+                color = CrimsonRuby
+            )
+            Text(
+                text = "Permanently delete all data.",
+                style = MaterialTheme.typography.bodySmall,
+                color = if (isDark) CrimsonRuby.copy(alpha = 0.7f) else Color(0xFFD32F2F).copy(alpha = 0.6f)
+            )
         }
     }
 }
