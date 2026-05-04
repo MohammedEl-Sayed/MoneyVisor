@@ -1,31 +1,22 @@
 package com.moneyvisor.feature.transaction
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.moneyvisor.core.designsystem.icons.MoneyVisorIcons
-import com.moneyvisor.core.designsystem.theme.BrandBlue
-import com.moneyvisor.core.designsystem.theme.BrandBlueGradientEnd
-import com.moneyvisor.domain.model.RepeatInterval
-import com.moneyvisor.domain.model.TransactionType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -137,66 +128,11 @@ fun TransactionScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             // Header with Gradient
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp)
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(BrandBlueGradientEnd, BrandBlue)
-                        )
-                    )
-                    .padding(24.dp)
-            ) {
-                Column {
-                    IconButton(
-                        onClick = onNavigateBack,
-                        modifier = Modifier
-                            .size(56.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(Color.White.copy(alpha = 0.2f))
-                    ) {
-                        Icon(
-                            imageVector = MoneyVisorIcons.ArrowBack,
-                            contentDescription = "Back",
-                            tint = Color.White,
-                            modifier = Modifier.size(32.dp)
-                        )
-                    }
-                    
-                    Spacer(modifier = Modifier.height(16.dp))
-                    
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = if (transactionId == null) "Add Transaction" else "Edit Transaction",
-                            style = MaterialTheme.typography.headlineMedium,
-                            fontWeight = FontWeight.Black,
-                            color = Color.White
-                        )
-                        
-                        if (transactionId != null) {
-                            IconButton(
-                                onClick = viewModel::deleteTransaction,
-                                modifier = Modifier
-                                    .size(56.dp)
-                                    .clip(RoundedCornerShape(16.dp))
-                                    .background(Color.White.copy(alpha = 0.2f))
-                            ) {
-                                Icon(
-                                    imageVector = MoneyVisorIcons.Delete,
-                                    contentDescription = "Delete",
-                                    tint = Color.White,
-                                    modifier = Modifier.size(32.dp)
-                                )
-                            }
-                        }
-                    }
-                }
-            }
+            TransactionHeader(
+                transactionId = transactionId,
+                onNavigateBack = onNavigateBack,
+                onDelete = viewModel::deleteTransaction
+            )
 
             // Form Section
             Column(
@@ -208,256 +144,48 @@ fun TransactionScreen(
                     .padding(24.dp)
             ) {
                 // Type Selector
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .padding(4.dp)
-                ) {
-                    TransactionType.entries.forEach { type ->
-                        val isSelected = uiState.type == type
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(48.dp)
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent)
-                                .clickable { viewModel.onTypeChange(type) },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = type.name,
-                                color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-                }
+                TransactionTypeSelector(
+                    selectedType = uiState.type,
+                    onTypeChange = viewModel::onTypeChange
+                )
 
                 Spacer(modifier = Modifier.height(32.dp))
 
                 // Amount Section
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                    shape = RoundedCornerShape(24.dp)
-                ) {
-                    Column(modifier = Modifier.padding(20.dp)) {
-                        Text(
-                            "Amount", 
-                            style = MaterialTheme.typography.labelMedium, 
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            fontWeight = FontWeight.Bold
-                        )
-                        TextField(
-                            value = uiState.amount,
-                            onValueChange = viewModel::onAmountChange,
-                            modifier = Modifier.fillMaxWidth(),
-                            placeholder = { Text("0.00", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)) },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                            colors = TextFieldDefaults.colors(
-                                focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                                unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                                focusedContainerColor = Color.Transparent,
-                                unfocusedContainerColor = Color.Transparent,
-                                disabledContainerColor = Color.Transparent,
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent
-                            ),
-                            textStyle = MaterialTheme.typography.headlineLarge.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        )
-                    }
-                }
+                TransactionAmountInput(
+                    amount = uiState.amount,
+                    onAmountChange = viewModel::onAmountChange
+                )
 
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // Category Section
-                Text(
-                    "Category", 
-                    style = MaterialTheme.typography.labelMedium, 
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(start = 4.dp, bottom = 8.dp)
-                )
-                TextField(
-                    value = uiState.category,
-                    onValueChange = viewModel::onCategoryChange,
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = { Text("What is this for?", color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)) },
-                    colors = TextFieldDefaults.colors(
-                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
-                    shape = RoundedCornerShape(16.dp),
-                    textStyle = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onSurface)
+                TransactionCategoryInput(
+                    category = uiState.category,
+                    onCategoryChange = viewModel::onCategoryChange
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // Tags Section
-                Text(
-                    "Tags", 
-                    style = MaterialTheme.typography.labelMedium, 
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(start = 4.dp)
+                TransactionTagsSection(
+                    availableTags = uiState.availableTags,
+                    selectedTag = uiState.tag,
+                    onTagChange = viewModel::onTagChange,
+                    onAddTagClick = { showAddTagSheet = true }
                 )
-                
-                Spacer(modifier = Modifier.height(12.dp))
-                
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    // Add Custom Tag Button
-                    Surface(
-                        onClick = { showAddTagSheet = true },
-                        shape = RoundedCornerShape(12.dp),
-                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                        modifier = Modifier.height(48.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 12.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Icon(MoneyVisorIcons.Add, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
-                            Text("New Tag", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                        }
-                    }
-                    
-                    Spacer(modifier = Modifier.width(12.dp))
-                    
-                    LazyRow(
-                        modifier = Modifier.weight(1f),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        items(uiState.availableTags.size) { index ->
-                            val tag = uiState.availableTags[index]
-                            val isSelected = uiState.tag == tag
-                            Surface(
-                                onClick = { viewModel.onTagChange(if (isSelected) "" else tag) },
-                                shape = RoundedCornerShape(12.dp),
-                                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
-                                border = if (isSelected) null else androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f)),
-                                modifier = Modifier.height(48.dp)
-                            ) {
-                                Box(
-                                    contentAlignment = Alignment.Center,
-                                    modifier = Modifier.padding(horizontal = 16.dp)
-                                ) {
-                                    Text(
-                                        text = tag,
-                                        color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
-                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                        fontSize = 14.sp
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // Repetition Section
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                    shape = RoundedCornerShape(24.dp)
-                ) {
-                    Column(modifier = Modifier.padding(20.dp)) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                "Recurring Transaction",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                            Switch(
-                                checked = uiState.isRepeated,
-                                onCheckedChange = viewModel::onRepeatedChange,
-                                colors = SwitchDefaults.colors(
-                                    checkedThumbColor = Color.White,
-                                    checkedTrackColor = MaterialTheme.colorScheme.primary,
-                                    uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant
-                                )
-                            )
-                        }
-
-                        if (uiState.isRepeated) {
-                            Spacer(modifier = Modifier.height(16.dp))
-                            
-                            // Interval Selector
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.5f))
-                                    .padding(4.dp)
-                            ) {
-                                listOf(RepeatInterval.DAYS, RepeatInterval.MONTHLY).forEach { interval ->
-                                    val isSelected = uiState.repeatInterval == interval
-                                    Box(
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .height(40.dp)
-                                            .clip(RoundedCornerShape(8.dp))
-                                            .background(if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent)
-                                            .clickable { viewModel.onRepeatIntervalChange(interval) },
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            text = if (interval == RepeatInterval.DAYS) "Every X Days" else "Monthly",
-                                            color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 14.sp
-                                        )
-                                    }
-                                }
-                            }
-
-                            Spacer(modifier = Modifier.height(16.dp))
-
-                            // Repeat Value Input
-                            Text(
-                                text = if (uiState.repeatInterval == RepeatInterval.DAYS) "Number of days" else "Day of month",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                fontWeight = FontWeight.Medium
-                            )
-                            TextField(
-                                value = uiState.repeatValue,
-                                onValueChange = viewModel::onRepeatValueChange,
-                                modifier = Modifier.fillMaxWidth(),
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                colors = TextFieldDefaults.colors(
-                                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-                                    focusedContainerColor = Color.Transparent,
-                                    unfocusedContainerColor = Color.Transparent,
-                                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-                                    unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f)
-                                ),
-                                singleLine = true
-                            )
-                        }
-                    }
-                }
+                TransactionRepetitionSection(
+                    isRepeated = uiState.isRepeated,
+                    repeatInterval = uiState.repeatInterval,
+                    repeatValue = uiState.repeatValue,
+                    onRepeatedChange = viewModel::onRepeatedChange,
+                    onRepeatIntervalChange = viewModel::onRepeatIntervalChange,
+                    onRepeatValueChange = viewModel::onRepeatValueChange
+                )
 
                 Spacer(modifier = Modifier.height(48.dp))
 
