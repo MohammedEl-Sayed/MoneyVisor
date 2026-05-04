@@ -1,0 +1,3 @@
+## 2024-05-04 - SimpleDateFormat caching
+**Learning:** Instantiating `SimpleDateFormat` inside a Composable function (or any frequently called function like `CurrencyUtils.formatAmount`) is a significant performance bottleneck because it performs expensive resource lookups and locale handling each time.
+**Action:** Cache these instances. For Composables, use `remember { SimpleDateFormat(...) }` so it's created once per composition tree instance. For utility singletons used heavily during recomposition (like `CurrencyUtils`), use a `ThreadLocal` or object-level map if thread safety is required, to reuse the expensive `NumberFormat` objects.

@@ -44,11 +44,21 @@ object CurrencyUtils {
         return if (isPrivacy) "****" else amount
     }
 
+    // Cache NumberFormat instances to avoid expensive initialization
+    // Note: NumberFormat is not thread-safe, so we use ThreadLocal
+    private val formatters = object : ThreadLocal<MutableMap<String, NumberFormat>>() {
+        override fun initialValue() = mutableMapOf<String, NumberFormat>()
+    }
+
     fun formatAmount(amount: Double, currencyCode: String): String {
         return try {
-            val currency = Currency.getInstance(currencyCode)
-            val format = NumberFormat.getCurrencyInstance(Locale.getDefault())
-            format.currency = currency
+            val map = formatters.get()!!
+            val format = map.getOrPut(currencyCode) {
+                val currency = Currency.getInstance(currencyCode)
+                val newFormat = NumberFormat.getCurrencyInstance(Locale.getDefault())
+                newFormat.currency = currency
+                newFormat
+            }
             format.format(amount)
         } catch (e: Exception) {
             // Fallback to simple format
