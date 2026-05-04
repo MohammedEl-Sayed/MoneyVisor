@@ -1,0 +1,5 @@
+🧪 Add validation testing to TransactionViewModel
+
+🎯 **What:** The validation logic for missing/invalid amounts and empty categories in `TransactionViewModel` lacked test coverage.
+📊 **Coverage:** Added coverage for creating transactions with empty, negative, or zero amounts and empty categories. The successful `saveTransaction` path is also now fully verified to ensure correct repository interactions.
+✨ **Result:** Improved robustness by systematically verifying error state updates when invalid inputs are processed.
